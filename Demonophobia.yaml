@@ -1,0 +1,41 @@
+meta:
+  id: dpm
+  application: Hot Soup Processor
+  endian: le
+seq:
+  - id: exe_data
+    size: 176128
+  - id: magic
+    contents: ["DPMX"]
+  - id: data_offset
+    type: u4
+  - id: file_count
+    type: u4
+  - id: magic2
+    type: u4
+  - id: entries
+    type: file_entry
+    repeat: expr
+    repeat-expr: file_count
+
+types:
+  file_entry:
+    seq:
+      - id: filename
+        size: 0x10
+        type: str
+        encoding: ASCII
+      - id: magic_ffffffff
+        type: u4
+      - id: key
+        type: u4
+      - id: offset
+        type: u4
+      - id: filesize
+        type: u4            
+    instances:
+      data:
+        pos: _root.data_offset + offset + 176128
+        size: filesize
+        io: _root._io
+    
